@@ -1,5 +1,5 @@
 import { useModal } from "../../Context/Modal/ModalContext";
-import SignUp from "../Auth/SignUp/SignUp";
+import SignUp from "../Auth/SignUp/SignIn";
 
 const GlobalModals = () => {
   const { modal } = useModal();

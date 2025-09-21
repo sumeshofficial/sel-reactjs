@@ -11,6 +11,7 @@ import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@her
 import { navigation } from '../../utils/navigation'
 import { useModal } from '../../Context/Modal/ModalContext'
 import MobileMenu from './MobileMenu'
+import logo from "../../assets/sel-logo.png"
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -45,7 +46,7 @@ export default function Navbar() {
                   <span className="sr-only">Your Company</span>
                   <img
                     alt=""
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
+                    src={logo}
                     className="h-8 w-auto"
                   />
                 </a>
