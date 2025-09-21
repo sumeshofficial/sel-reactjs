@@ -1,9 +1,9 @@
-const GoogleSignUp = ({ doCreateUserWithGoogle }) => {
+const GoogleSignUp = ({ doUserLoginWithGoogle }) => {
 
   return (
     <div className="flex flex-col gap-y-4 ">
       <button
-        onClick={doCreateUserWithGoogle}
+        onClick={doUserLoginWithGoogle}
         className="flex py-3 px-3 active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all rounded-xl border-2 border-gray-200 items-center justify-center gap-2 "
       >
         {/* Google SVG */}

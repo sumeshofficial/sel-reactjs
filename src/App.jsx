@@ -1,15 +1,18 @@
 import Header from "./components/Navbar/Navbar";
 import GlobalModals from "./components/Modal/GlobalModal";
-import Modal from "./components/Modal/Modal";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 function App() {
   return (
     <>
-      <Header />
+      <ErrorBoundary>
+        <Header />
+      </ErrorBoundary>
       <h2>SEL</h2>
-      <Modal>
-        <GlobalModals />
-      </Modal>
+
+      <ErrorBoundary>
+          <GlobalModals />
+      </ErrorBoundary>
     </>
   );
 }

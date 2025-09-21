@@ -1,9 +1,15 @@
+import { doLoginWithGoogle } from '../../../firebase/auth';
 import GoogleSignUp from './GoogleSignIn';
 
 const SignInForm = () => {
+
+    const doUserLoginWithGoogle = () => {
+        doLoginWithGoogle()
+    }
+
     return (
         <div className='my-10'>
-            <GoogleSignUp />
+            <GoogleSignUp doUserLoginWithGoogle={doUserLoginWithGoogle} />
         </div>
     );
 }

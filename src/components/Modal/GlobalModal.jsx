@@ -1,5 +1,6 @@
 import { useModal } from "../../Context/Modal/ModalContext";
-import SignUp from "../Auth/SignUp/SignIn";
+import SignIn from "../Auth/SignUp/SignIn";
+import Modal from "./Modal";
 
 const GlobalModals = () => {
   const { modal } = useModal();
@@ -8,7 +9,11 @@ const GlobalModals = () => {
 
   switch (modal) {
     case "login":
-      return <SignUp />;
+      return (
+        <Modal>
+          <SignIn />
+        </Modal>
+      );
     default:
       return null;
   }

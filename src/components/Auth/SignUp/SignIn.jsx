@@ -1,5 +1,4 @@
 import logo from "../../../assets/sel-logo.png";
-import { LogIn } from "react-feather";
 import SignInForm from "./SignInForm";
 
 const SignUp = () => {
