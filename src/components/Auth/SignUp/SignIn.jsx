@@ -3,7 +3,7 @@ import SignInForm from "./SignInForm";
 
 const SignUp = () => {
   return (
-    <div className="px-10 flex justify-center">
+    <div className="px-10 flex justify-center" >
       <div>
         <div className="flex justify-center">
             <h1 className="text-3xl font-extrabold ">Join</h1>
