@@ -4,7 +4,7 @@ import useAuthListener from "./components/Auth/useAuthListener";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import MyProducts from "./components/MyProducts";
-import SellProducts from "./components/SellProducts";
+import SellProduct from "./components/SellProducts/SellProduct";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
             path={"/sell-product"}
             element={
               <ProtectedRoute>
-                <SellProducts />
+                <SellProduct />
               </ProtectedRoute>
             }
           />

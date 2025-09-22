@@ -9,16 +9,12 @@ const ProtectedRoute = ({ children }) => {
   const { openModal } = useModal();
 
   useEffect(() => {
-    if (!userLoggedIn) {
-      openModal("login"); // open login modal on home
+    if (!loading && !userLoggedIn) {
+      openModal("login");
     }
-  }, [userLoggedIn]);
+  }, [userLoggedIn, openModal, loading]);
 
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (!userLoggedIn) {
+  if (!loading && !userLoggedIn) {
     return <Navigate to="/" replace />;
   }
 
