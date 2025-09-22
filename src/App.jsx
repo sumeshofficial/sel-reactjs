@@ -6,6 +6,8 @@ import Home from "./components/Home";
 import MyProducts from "./components/MyProducts";
 import SellProduct from "./components/SellProducts/SellProduct";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { SellProductContext } from "./Context/SellProductContext/SellProductContext";
+import { SellProductProvider } from "./Context/SellProductContext/SellProductProvider";
 
 function App() {
   useAuthListener();
@@ -30,7 +32,9 @@ function App() {
             path={"/sell-product"}
             element={
               <ProtectedRoute>
-                <SellProduct />
+                <SellProductProvider>
+                  <SellProduct />
+                </SellProductProvider>
               </ProtectedRoute>
             }
           />
