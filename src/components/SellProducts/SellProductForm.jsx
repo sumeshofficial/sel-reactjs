@@ -7,10 +7,14 @@ import { db, storage } from "../../firebase/firebase";
 import { addDoc, collection } from "firebase/firestore";
 import toast from "react-hot-toast";
 import { Loader } from "react-feather";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const SellProductForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const { reset, isSubmitting, handleSubmit } = useSellProductContext();
+  const { currentUser } = useSelector( store => store.auth );
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
@@ -26,6 +30,12 @@ const SellProductForm = () => {
       }
 
       await addDoc(collection(db, "products"), {
+        publishedBy: {
+          userId: currentUser?.userId,
+          fullname: currentUser?.fullname,
+          email: currentUser?.email,
+          userImg: currentUser?.userImg,
+        },
         ...data,
         price: Number(data.price),
         image: imageUrl,
@@ -35,6 +45,8 @@ const SellProductForm = () => {
       reset();
       setSelectedFile(null);
       toast.success("Product Added");
+
+      navigate('/');
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");

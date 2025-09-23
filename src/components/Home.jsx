@@ -1,5 +1,6 @@
 import ErrorBoundary from "./ErrorBoundary"
 import Navbar from "./Navbar/Navbar"
+import ProductList from "./productListing/ProductList";
 
 const Home = () => {
     
@@ -8,7 +9,10 @@ const Home = () => {
             <ErrorBoundary >
                 <Navbar />
             </ErrorBoundary>
-            <h2>Home</h2>
+            
+            <div className="w-full flex justify-center">
+                <ProductList />
+            </div>
         </div>
     );
 }
