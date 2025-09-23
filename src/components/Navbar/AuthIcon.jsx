@@ -20,7 +20,7 @@ const AuthIcon = () => {
   return (
     <>
       {loading ? (
-        <Loader className="hidden  md:block md:w-8 md:h-8 md:rounded-full md:animate-spin" />
+        <Loader className="hidden md:block md:w-8 md:h-8 md:rounded-full md:animate-spin" />
       ) : !userLoggedIn ? (
         <div className="hidden lg:flex lg:items-center lg:justify-end md:gap-2">
           <LogIn />

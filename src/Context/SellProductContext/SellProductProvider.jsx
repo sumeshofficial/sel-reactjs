@@ -4,10 +4,10 @@ import { useForm } from "react-hook-form";
 export const SellProductProvider = ({ children }) => {
   const { register, handleSubmit, reset, setValue, getValues, formState } =
     useForm();
-  const { errors, isSubmiting } = formState;
+  const { errors, isSubmitting } = formState;
 
   return (
-    <SellProductContext.Provider value={{ register, handleSubmit, reset, setValue, getValues, errors, isSubmiting }}>
+    <SellProductContext.Provider value={{ register, handleSubmit, reset, setValue, getValues, errors, isSubmitting }}>
       {children}
     </SellProductContext.Provider>
   );

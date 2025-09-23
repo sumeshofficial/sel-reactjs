@@ -1,47 +1,21 @@
-import { useRef, useState } from "react";
-import { Upload, UploadCloud, X } from "react-feather";
+import { useRef } from "react";
+import { Upload, X } from "react-feather";
 import { useSellProductContext } from "../../Context/SellProductContext/SellProductContext";
 
-const ImageUploader = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
+const ImageUploader = ({ selectedFile, setSelectedFile }) => {
   const inputRef = useRef(null);
-
-  const { register, errors } = useSellProductContext();
-
-  const imageValidation = {
-    required: "Product image is required",
-    validate: {
-      fileType: (fileList) => {
-        const file = fileList[0];
-        if (!file) return true;
-        const validTypes = ["image/jpeg", "image/png", "image/webp"];
-        return (
-          validTypes.includes(file.type) ||
-          "Only JPEG, PNG, or WEBP images allowed"
-        );
-      },
-      fileSize: (fileList) => {
-        const file = fileList[0];
-        if (!file) return true;
-        const maxSize = 2 * 1024 * 1024;
-        return file.size <= maxSize || "Image must be smaller than 2MB";
-      },
-    },
-  };
-
-  const handleImageChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setSelectedFile(e.target.files[0]);
-    }
-  };
+  const { register, errors, setValue } = useSellProductContext();
 
   const onChooseFiles = () => {
     inputRef.current.click();
   };
 
   const clearFileInput = () => {
-    inputRef.current.value = "";
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
     setSelectedFile(null);
+    setValue("image", null, { shouldValidate: true });
   };
 
   return (
@@ -50,12 +24,24 @@ const ImageUploader = () => {
       <input
         type="file"
         accept="image/*"
-        onChange={handleImageChange}
-        ref={(e) => {
-          register("image", imageValidation).ref(e);
-          inputRef.current = e;
-        }}
         className="hidden"
+        {...register("image", {
+          validate: {
+            required: (file) =>
+              file instanceof File || "Product image is required",
+          },
+        })}
+        ref={(el) => {
+          register("image").ref(el);
+          inputRef.current = el;
+        }}
+        onChange={(e) => {
+          const file = e.target.files[0];
+          if (file) {
+            setSelectedFile(file);
+            setValue("image", file, { shouldValidate: true });
+          }
+        }}
       />
 
       {/* button/show */}

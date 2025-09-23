@@ -8,6 +8,7 @@ import SellProduct from "./components/SellProducts/SellProduct";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { SellProductContext } from "./Context/SellProductContext/SellProductContext";
 import { SellProductProvider } from "./Context/SellProductContext/SellProductProvider";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   useAuthListener();
@@ -18,6 +19,7 @@ function App() {
         <ErrorBoundary>
           <GlobalModals />
         </ErrorBoundary>
+        <Toaster />
         <Routes>
           <Route path={"/"} element={<Home />} />
           <Route
