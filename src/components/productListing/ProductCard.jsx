@@ -1,0 +1,93 @@
+import {
+  arrayUnion,
+  doc,
+  getDoc,
+  increment,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "../../firebase/firebase";
+import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { addToCart } from "../../redux/cartSlice";
+
+const ProductCard = ({ product }) => {
+  const { currentUser, userLoggedIn } = useSelector((store) => store.auth);
+  const { cart } = useSelector((store) => store.cart);
+  const alreadyInCart = cart?.products?.find( pro => pro.id === product.id );
+  const dispatch = useDispatch();
+
+  if (product.sold) {
+    return;
+  }
+
+  const handleAddToCart = async () => {
+    try {
+      if (!userLoggedIn) {
+        toast.dismiss();
+        return toast.error("Please login to add items to cart");
+      }
+
+      const cartRef = doc(db, "carts", currentUser.userId);
+      const cartSanp = await getDoc(cartRef);
+
+      if (!cartSanp.exists()) {
+        await setDoc(cartRef, {
+          count: 1,
+          userId: currentUser?.userId,
+          products: [product],
+        });
+      } else {
+        await updateDoc(cartRef, {
+          count: increment(1),
+          products: arrayUnion(product),
+        });
+      }
+
+      dispatch(addToCart(product));
+
+      toast.success("Item added to cart!");
+    } catch (error) {
+      console.error("Error adding to cart: ", error);
+      toast.error("Something went wrong!");
+    }
+  };
+
+  return (
+    <div className="group relative">
+      <div className="w-full h-60 overflow-hidden rounded-md">
+        <div className="w-full h-60 overflow-hidden rounded-md bg-gray-100 flex items-center justify-center">
+          <img
+            src={product.image}
+            alt={product.productName}
+            className="w-full h-full object-contain"
+          />
+        </div>
+      </div>
+
+      <div className="my-4 flex justify-between">
+        <div className="w-8/12">
+          <h3 className="font-bold text-gray-700">
+            <p>{product.productName}</p>
+          </h3>
+          <p className="mt-1 text-sm text-gray-500 line-clamp-2">
+            {product.description}
+          </p>
+        </div>
+        <p className="text-sm font-medium text-gray-900">₹{product.price}</p>
+      </div>
+
+       <div className="flex justify-end">
+        <button
+          onClick={handleAddToCart}
+          disabled={alreadyInCart}
+          className="bg-black p-2 text-white rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {alreadyInCart ? "Added to cart" : "Add To Cart"}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default ProductCard;

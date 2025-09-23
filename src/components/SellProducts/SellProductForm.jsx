@@ -40,6 +40,7 @@ const SellProductForm = () => {
         price: Number(data.price),
         image: imageUrl,
         createdAt: Date.now(),
+        sold: false,
       });
 
       reset();

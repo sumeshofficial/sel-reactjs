@@ -9,11 +9,14 @@ import { Link, useLocation } from "react-router-dom";
 import { Home, Loader, ShoppingBag, Tag } from "react-feather";
 import { useModal } from "../../Context/Modal/ModalContext";
 import { useSelector } from "react-redux";
+import { useCartWrapper } from "../../Context/Comment/CartWrapperContext";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { openModal } = useModal();
   const { userLoggedIn, loading } = useSelector((store) => store.auth);
+  const { cart } = useSelector( store => store.cart );
+  const { setCommentsWrapper } = useCartWrapper();
   const location = useLocation();
   const menu = [
     { name: "Home", icon: Home, href: "/" },
@@ -99,16 +102,16 @@ export default function Navbar() {
 
                   {/* Cart */}
                   <div className="me-4 flow-root lg:ml-6">
-                    <a href="#" className="group -m-2 flex items-center p-2">
+                    <button type="button" onClick={() => setCommentsWrapper(true)} className="group -m-2 flex items-center p-2">
                       <ShoppingBagIcon
                         aria-hidden="true"
                         className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
                       />
                       <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                        0
+                        {cart?.count}
                       </span>
                       <span className="sr-only">items in cart, view bag</span>
-                    </a>
+                    </button>
                   </div>
 
                   {/* Auth */}
