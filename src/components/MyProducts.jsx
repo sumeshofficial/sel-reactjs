@@ -12,12 +12,13 @@ const MyProducts = () => {
   const { items, loading } = useSelector((store) => store.products);
   const { currentUser } = useSelector((store) => store.auth);
 
+
   useEffect(() => {
     dispatch(fetchProducts());
   }, []);
 
   const products = items.filter(
-    (product) => product.publishedBy.userId === currentUser.userId
+    (product) => (product.publishedBy.userId === currentUser.userId) && !product.deleted
   );
 
   return (
