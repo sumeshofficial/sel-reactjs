@@ -12,14 +12,16 @@ import toast from "react-hot-toast";
 import { addToCart } from "../../redux/cartSlice";
 import { Edit, Trash } from "react-feather";
 import { Link } from "react-router-dom";
+import { useModal } from "../../Context/Modal/ModalContext";
 
 const ProductCard = ({ product, isUser }) => {
   const { currentUser, userLoggedIn } = useSelector((store) => store.auth);
   const { cart } = useSelector((store) => store.cart);
   const alreadyInCart = cart?.products?.find((pro) => pro.id === product.id);
   const dispatch = useDispatch();
+    const { openModal } = useModal();
 
-  if (product.sold) {
+  if (product.sold || product.deleted) {
     return;
   }
 
@@ -57,6 +59,11 @@ const ProductCard = ({ product, isUser }) => {
     }
   };
 
+  const handleDeleteProduct = () => {
+    const productId = product.id
+    openModal("confirm", { productId });
+  }
+
   return (
     <div className="group relative">
       <div className="w-full h-60 overflow-hidden rounded-md">
@@ -86,9 +93,9 @@ const ProductCard = ({ product, isUser }) => {
           <Link to={`/edit-product/${product.id}`}>
             <Edit />
           </Link>
-          <Link to={`/edit-product/${product.id}`}>
+          <button type="button" onClick={handleDeleteProduct}>
             <Trash />
-          </Link>
+          </button>
         </div>
       ) : (
         <div className="flex justify-end">

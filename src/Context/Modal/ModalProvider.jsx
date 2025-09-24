@@ -4,7 +4,7 @@ import { ModalContext } from "./ModalContext"
 export const ModalProvider = ({ children }) => {
   const [modal, setModal] = useState(null);
 
-  const openModal = ( type ) => setModal( type );
+  const openModal = ( type, props = {} ) => setModal( { type, props } );
   const closeModal = () => setModal(null);
 
   return (

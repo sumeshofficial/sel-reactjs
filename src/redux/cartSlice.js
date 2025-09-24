@@ -42,7 +42,7 @@ export const deleteCartItem = createAsyncThunk(
         .products.filter((p) => p.id !== productId);
       const productIds = cartSnap
         .data()
-        .products.filter((p) => p.id !== productId);
+        .productIds.filter((p) => p !== productId);
 
       await updateDoc(cartRef, {
         products,
@@ -75,7 +75,6 @@ export const checkoutProduct = createAsyncThunk(
         const cartData = cartDoc.data();
 
         if (cartDoc.id === userId) {
-          // current user → remove product
           const newProducts = cartData.products.filter(
             (p) => p.id !== productId
           );
@@ -106,6 +105,37 @@ export const checkoutProduct = createAsyncThunk(
   }
 );
 
+export const unAvailable = createAsyncThunk(
+  "cart/unAvailable",
+  async ( productId , { rejectWithValue }) => {
+    try {
+      const cartRef = collection(db, "carts");
+      const q = query(
+        cartRef,
+        where("productIds", "array-contains", productId)
+      );
+      const querySnapshot = await getDocs(q);
+
+      const updates = querySnapshot.docs.map(async (cartDoc) => {
+        const cartData = cartDoc.data();
+
+        const updatedProducts = cartData.products.map((product) =>
+          product.id === productId ? { ...product, deleted: true } : product
+        );
+
+        await updateDoc(cartDoc.ref, { products: updatedProducts });
+        return { userId: cartDoc.id, productId, isCurrentUser: false };
+      });
+
+      await Promise.all(updates);
+
+      return { productId, isCurrentUser: true };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -116,12 +146,17 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       state.cart.products.push(action.payload);
+      state.cart.productIds = state.cart.productIds || [];
       state.cart.productIds.push(action.payload.id);
       state.cart.count = state.cart.products.length;
     },
     deleteCartProduct: (state, action) => {
+      if (!state.cart) return;
       state.cart.products = state.cart.products.filter(
         (item) => item.id !== action.payload
+      );
+      state.cart.productIds = state.cart.productIds.filter(
+        (id) => id !== action.payload
       );
       state.cart.count = state.cart.products.length;
     },
@@ -145,8 +180,20 @@ const cartSlice = createSlice({
         state.cart.products = state.cart.products.filter(
           (p) => p.id !== action.payload
         );
+        state.cart.productIds = state.cart.productIds.filter(
+          (p) => p !== action.payload.productId
+        );
         state.cart.count = state.cart.products.length;
-        state.cart.productIds = state.cart.products.map((p) => p.id);
+      })
+      .addCase(unAvailable.fulfilled, (state, action) => {
+        if (!state.cart) return;
+        state.cart.products = state.cart.products.map((p) =>
+          p.id === action.payload.productId ? { ...p, deleted: true } : p
+        );
+        state.cart.productIds = state.cart.products
+          .filter((p) => !p.deleted)
+          .map((p) => p.id);
+        state.cart.count = state.cart.products.filter((p) => !p.deleted).length;
       })
       .addCase(checkoutProduct.fulfilled, (state, action) => {
         if (action.payload.isCurrentUser) {
@@ -166,6 +213,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { deleteCartProduct, addToCart } =
-  cartSlice.actions;
+export const { deleteCartProduct, addToCart } = cartSlice.actions;
 export default cartSlice.reducer;

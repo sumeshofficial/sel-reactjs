@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { checkoutProduct } from "./cartSlice";
 
@@ -12,6 +17,19 @@ export const fetchProducts = createAsyncThunk(
         id: doc.id,
         ...doc.data(),
       }));
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteProduct = createAsyncThunk(
+  "products/deleteProduct",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const productRef = doc(db, "products", productId);
+      await updateDoc(productRef, { deleted: true });
+      return productId;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -45,6 +63,11 @@ const productSlice = createSlice({
           product.id === action.payload.productId
             ? { ...product, sold: true }
             : product
+        );
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.items = state.items.filter(
+          (product) => product.id !== action.payload
         );
       });
   },

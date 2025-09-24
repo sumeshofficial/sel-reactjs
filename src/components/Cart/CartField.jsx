@@ -39,7 +39,9 @@ const CartField = ({ product }) => {
             )}
           </div>
           <div className="flex flex-col gap-1">
-            <p className="text-md font-bold line-clamp-1">{product.productName}</p>
+            <p className="text-md font-bold line-clamp-1">
+              {product.productName}
+            </p>
             <p className="text-gray-500 text-sm">{product.category}</p>
             <p className="text-sm font-bold">₹{product.price}</p>
           </div>
@@ -51,7 +53,16 @@ const CartField = ({ product }) => {
         </div>
       </div>
       <div>
-        {!product.sold && (
+        {!product.sold && product.deleted ? (
+          product.deleted && (
+            <button
+              type="button"
+              className="bg-red-500 text-white py-2 px-3 rounded-md "
+            >
+              Unavailable
+            </button>
+          )
+        ) : (
           <button
             type="button"
             onClick={handleCheckout}
