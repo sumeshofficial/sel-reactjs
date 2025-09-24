@@ -11,7 +11,6 @@ const MyProducts = () => {
   const dispatch = useDispatch();
   const { items, loading } = useSelector((store) => store.products);
   const { currentUser } = useSelector((store) => store.auth);
-  const isUser = true;
 
 
   useEffect(() => {
@@ -43,7 +42,6 @@ const MyProducts = () => {
                     <ProductCard
                       key={product.id}
                       product={product}
-                      isUser={isUser}
                     />
                   ))}
                 </div>
