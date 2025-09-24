@@ -1,53 +1,97 @@
 import AddImage from "./AddImage";
 import ProductField from "./ProductField";
 import { useSellProductContext } from "../../Context/SellProductContext/SellProductContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "../../firebase/firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
 import { Loader } from "react-feather";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const SellProductForm = () => {
+  const { id } = useParams();
   const [selectedFile, setSelectedFile] = useState(null);
-  const { reset, isSubmitting, handleSubmit } = useSellProductContext();
-  const { currentUser } = useSelector( store => store.auth );
+  const { reset, isSubmitting, handleSubmit, setValue } =
+    useSellProductContext();
+  const { currentUser } = useSelector((store) => store.auth);
+  const { items } = useSelector((store) => store.products);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!id) return;
+
+    const product = items.find((product) => product.id === id);
+
+    if (!product || product.publishedBy.userId !== currentUser?.userId) {
+      navigate("/");
+      return;
+    }
+
+    const fetchProduct = async () => {
+      const productRef = doc(db, "products", id);
+      const snap = await getDoc(productRef);
+
+      if (snap.exists()) {
+        const data = snap.data();
+        setValue("productName", data.productName);
+        setValue("category", data.category);
+        setValue("price", data.price);
+        setValue("description", data.description);
+        setSelectedFile(data.image);
+      }
+    };
+    fetchProduct();
+  }, [id, setValue]);
 
   const onSubmit = async (data) => {
     try {
       let imageUrl = "";
-      if (selectedFile) {
+      if (selectedFile instanceof File) {
         const imageRef = ref(
           storage,
           `products/${Date.now()}-${selectedFile.name}`
         );
         await uploadBytes(imageRef, selectedFile);
-
         imageUrl = await getDownloadURL(imageRef);
+      } else if (typeof selectedFile === "string") {
+        imageUrl = selectedFile;
       }
 
-      await addDoc(collection(db, "products"), {
-        publishedBy: {
-          userId: currentUser?.userId,
-          fullname: currentUser?.fullname,
-          email: currentUser?.email,
-          userImg: currentUser?.userImg,
-        },
-        ...data,
-        price: Number(data.price),
-        image: imageUrl,
-        createdAt: Date.now(),
-        sold: false,
-      });
+      if (id) {
+        const productRef = doc(db, "products", id);
+
+        await updateDoc(productRef, {
+          ...data,
+          price: Number(data.price),
+          image: imageUrl,
+          updatedAt: Date.now(),
+        });
+
+        toast.success("Product Updated");
+      } else {
+        await addDoc(collection(db, "products"), {
+          publishedBy: {
+            userId: currentUser?.userId,
+            fullname: currentUser?.fullname,
+            email: currentUser?.email,
+            userImg: currentUser?.userImg,
+          },
+          ...data,
+          price: Number(data.price),
+          image: imageUrl,
+          createdAt: Date.now(),
+          sold: false,
+        });
+
+        toast.success("Product Added");
+      }
 
       reset();
       setSelectedFile(null);
-      toast.success("Product Added");
 
-      navigate('/');
+      navigate("/");
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
@@ -58,7 +102,9 @@ const SellProductForm = () => {
     <div className="w-11/12 bg-white rounded-2xl p-10">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <h1 className="text-2xl font-bold mb-2">Add Product</h1>
+          <h1 className="text-2xl font-bold mb-2">
+            {id ? "Edit Product" : "Add Product"}
+          </h1>
           <div className="flex flex-col gap-4 md:flex-row md:justify-between">
             <div className="border-2 border-gray-300 rounded-xl p-5 w-11/12">
               <AddImage

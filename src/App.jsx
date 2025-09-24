@@ -9,6 +9,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { SellProductContext } from "./Context/SellProductContext/SellProductContext";
 import { SellProductProvider } from "./Context/SellProductContext/SellProductProvider";
 import { Toaster } from "react-hot-toast";
+import NotFound from "./components/NotFound";
 
 function App() {
   useAuthListener();
@@ -26,7 +27,9 @@ function App() {
             path={"/my-products"}
             element={
               <ProtectedRoute>
-                <MyProducts />
+                <ErrorBoundary>
+                  <MyProducts />
+                </ErrorBoundary>
               </ProtectedRoute>
             }
           />
@@ -40,6 +43,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path={"/edit-product/:id"}
+            element={
+              <ProtectedRoute>
+                <SellProductProvider>
+                  <SellProduct />
+                </SellProductProvider>
+              </ProtectedRoute>
+            }
+          />
+          <Route path={"*"} element={<NotFound />} />
         </Routes>
       </Router>
     </>

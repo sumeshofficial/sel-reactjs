@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import { checkoutProduct } from "./cartSlice";
 
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
@@ -38,6 +39,13 @@ const productSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(checkoutProduct.fulfilled, (state, action) => {
+        state.items = state.items.map((product) =>
+          product.id === action.payload.productId
+            ? { ...product, sold: true }
+            : product
+        );
       });
   },
 });

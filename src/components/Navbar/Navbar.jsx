@@ -15,7 +15,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { openModal } = useModal();
   const { userLoggedIn, loading } = useSelector((store) => store.auth);
-  const { cart } = useSelector( store => store.cart );
+  const { cart } = useSelector((store) => store.cart);
   const { setCommentsWrapper } = useCartWrapper();
   const location = useLocation();
   const menu = [
@@ -102,7 +102,11 @@ export default function Navbar() {
 
                   {/* Cart */}
                   <div className="me-4 flow-root lg:ml-6">
-                    <button type="button" onClick={() => setCommentsWrapper(true)} className="group -m-2 flex items-center p-2">
+                    <button
+                      type="button"
+                      onClick={() => setCommentsWrapper(true)}
+                      className="group -m-2 flex items-center p-2"
+                    >
                       <ShoppingBagIcon
                         aria-hidden="true"
                         className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"

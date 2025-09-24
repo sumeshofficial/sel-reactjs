@@ -7,10 +7,15 @@ import ProductCard from "./ProductCard";
 const ProductList = () => {
   const dispatch = useDispatch();
   const { items, loading } = useSelector((store) => store.products);
+  const { currentUser } = useSelector((store) => store.auth);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, []);
+
+  const products = items.filter(
+    (product) => product.publishedBy.userId !== currentUser?.userId
+  );
 
   return (
     <div className="bg-white">
@@ -25,7 +30,7 @@ const ProductList = () => {
           </h2>
 
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {items.map((product) => (
+            {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

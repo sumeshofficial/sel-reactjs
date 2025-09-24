@@ -21,10 +21,12 @@ const CartContainer = () => {
         <div className="ml-auto flex items-center">
           <Loader className="hidden md:block md:w-8 md:h-8 md:rounded-full md:animate-spin" />
         </div>
-      ) : (
-        cart?.products.length ? cart?.products?.map((product) => (
+      ) : cart?.products.length ? (
+        cart?.products?.map((product) => (
           <CartField key={product.id} product={product} />
-        )) : <p>Cart is empty</p>
+        ))
+      ) : (
+        <p>Cart is empty</p>
       )}
     </div>
   );

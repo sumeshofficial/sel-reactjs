@@ -1,10 +1,16 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Upload, X } from "react-feather";
 import { useSellProductContext } from "../../Context/SellProductContext/SellProductContext";
 
 const ImageUploader = ({ selectedFile, setSelectedFile }) => {
   const inputRef = useRef(null);
   const { register, errors, setValue } = useSellProductContext();
+
+  useEffect(() => {
+    if (selectedFile) {
+      setValue("image", selectedFile, { shouldValidate: true });
+    }
+  }, [selectedFile, setValue]);
 
   const onChooseFiles = () => {
     inputRef.current.click();
@@ -28,7 +34,9 @@ const ImageUploader = ({ selectedFile, setSelectedFile }) => {
         {...register("image", {
           validate: {
             required: (file) =>
-              file instanceof File || "Product image is required",
+              file instanceof File ||
+              typeof file === "string" ||
+              "Product image is required",
           },
         })}
         ref={(el) => {
@@ -65,7 +73,11 @@ const ImageUploader = ({ selectedFile, setSelectedFile }) => {
       ) : (
         <div className="w-11/12 sm:h-auto md:h-70 flex justify-center items-center rounded-2xl overflow-hidden">
           <img
-            src={URL.createObjectURL(selectedFile)}
+            src={
+              selectedFile instanceof File
+                ? URL.createObjectURL(selectedFile)
+                : selectedFile
+            }
             alt="Preview"
             className="max-h-full max-w-full object-contain rounded-xl"
           />
@@ -78,14 +90,20 @@ const ImageUploader = ({ selectedFile, setSelectedFile }) => {
             <span className="text-blue-500">
               <img
                 className="w-8 h-8"
-                src={URL.createObjectURL(selectedFile)}
+                src={
+                  selectedFile instanceof File
+                    ? URL.createObjectURL(selectedFile)
+                    : selectedFile
+                }
               />
             </span>
 
             <div className="flex flex-1 items-center gap-4">
               <div className="flex-1 w-0">
                 <h6 className="flex text-base font-medium truncate">
-                  {selectedFile.name}
+                  {selectedFile instanceof File
+                    ? selectedFile.name
+                    : selectedFile.split("/").pop().split("?")[0]}
                 </h6>
               </div>
               <button onClick={clearFileInput}>
