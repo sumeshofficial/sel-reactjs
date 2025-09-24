@@ -19,7 +19,7 @@ const ProductCard = ({ product, isUser }) => {
   const { cart } = useSelector((store) => store.cart);
   const alreadyInCart = cart?.products?.find((pro) => pro.id === product.id);
   const dispatch = useDispatch();
-    const { openModal } = useModal();
+  const { openModal } = useModal();
 
   if (product.sold || product.deleted) {
     return;
@@ -60,9 +60,9 @@ const ProductCard = ({ product, isUser }) => {
   };
 
   const handleDeleteProduct = () => {
-    const productId = product.id
+    const productId = product.id;
     openModal("confirm", { productId });
-  }
+  };
 
   return (
     <div className="group relative">

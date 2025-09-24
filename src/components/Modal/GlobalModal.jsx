@@ -18,7 +18,7 @@ const GlobalModals = () => {
     case "confirm":
       return (
         <Modal>
-          <ConfirmModal {...modal.props}/>
+          <ConfirmModal {...modal.props} />
         </Modal>
       );
     default:

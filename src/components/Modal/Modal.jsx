@@ -1,24 +1,15 @@
 "use client";
 
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-} from "@headlessui/react";
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { X } from "react-feather";
 import { useModal } from "../../Context/Modal/ModalContext";
 
 const Modal = ({ children }) => {
-
-    const { modal, closeModal } = useModal()
+  const { modal, closeModal } = useModal();
 
   return (
     <div>
-      <Dialog
-        open={!!modal}
-        onClose={closeModal}
-        className="relative z-10"
-      >
+      <Dialog open={!!modal} onClose={closeModal} className="relative z-10">
         <DialogBackdrop
           transition
           className="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in "

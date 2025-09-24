@@ -5,14 +5,13 @@ import { deleteProduct } from "../../redux/productSlice";
 import { unAvailable } from "../../redux/cartSlice";
 
 const ConfirmModal = ({ productId }) => {
-
   const { closeModal } = useModal();
   const dispatch = useDispatch();
 
   const handleDelete = () => {
     dispatch(deleteProduct(productId));
     dispatch(unAvailable(productId));
-  }
+  };
 
   return (
     <div className="flex justify-center">
@@ -24,10 +23,18 @@ const ConfirmModal = ({ productId }) => {
           undone.
         </p>
         <div className="mt-10 flex gap-5">
-          <button onClick={() => closeModal()} type="button" className="bg-gray-500 text-white px-5 py-2 text-xl rounded-md">
+          <button
+            onClick={() => closeModal()}
+            type="button"
+            className="bg-gray-500 text-white px-5 py-2 text-xl rounded-md"
+          >
             Cancel
           </button>
-          <button type="button" onClick={handleDelete} className="bg-red-500 text-white px-5 py-2 text-xl rounded-md">
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="bg-red-500 text-white px-5 py-2 text-xl rounded-md"
+          >
             Delete
           </button>
         </div>

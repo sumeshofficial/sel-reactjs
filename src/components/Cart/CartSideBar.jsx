@@ -29,7 +29,6 @@ const CartSideBar = () => {
         {/* <p className="text-gray-500 ">Cart is empty.</p> */}
 
         <CartContainer />
-
       </div>
     </div>
   );
