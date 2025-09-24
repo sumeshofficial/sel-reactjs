@@ -3,14 +3,18 @@ import { useModal } from "../../Context/Modal/ModalContext";
 import { useDispatch } from "react-redux";
 import { deleteProduct } from "../../redux/productSlice";
 import { unAvailable } from "../../redux/cartSlice";
+import toast from "react-hot-toast";
 
 const ConfirmModal = ({ productId }) => {
   const { closeModal } = useModal();
   const dispatch = useDispatch();
 
   const handleDelete = () => {
+    closeModal();
     dispatch(deleteProduct(productId));
     dispatch(unAvailable(productId));
+    toast.dismiss();
+    toast.success("Product deleted");
   };
 
   return (
