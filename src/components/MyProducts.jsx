@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from "react-redux";
 import CartSideBar from "./cart/CartSideBar";
 import ErrorBoundary from "./ErrorBoundary";
 import Navbar from "./Navbar/Navbar";
-import ProductList from "./productListing/ProductList";
 import { useEffect } from "react";
 import { fetchProducts } from "../redux/productSlice";
 import ProductCard from "./productListing/ProductCard";

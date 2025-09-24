@@ -53,24 +53,23 @@ const CartField = ({ product }) => {
         </div>
       </div>
       <div>
-        {!product.sold && product.deleted ? (
-          product.deleted && (
+        {!product.sold &&
+          (product.deleted ? (
             <button
               type="button"
               className="bg-red-500 text-white py-2 px-3 rounded-md "
             >
-              Unavailable
+              unavailable
             </button>
-          )
-        ) : (
-          <button
-            type="button"
-            onClick={handleCheckout}
-            className="bg-black text-white py-2 px-3 rounded-md "
-          >
-            Checkout
-          </button>
-        )}
+          ) : (
+            <button
+              type="button"
+              onClick={handleCheckout}
+              className="bg-black text-white py-2 px-3 rounded-md "
+            >
+              Checkout
+            </button>
+          ))}
       </div>
     </div>
   );

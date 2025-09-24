@@ -83,6 +83,7 @@ const SellProductForm = () => {
           image: imageUrl,
           createdAt: Date.now(),
           sold: false,
+          deleted: false,
         });
 
         toast.success("Product Added");
