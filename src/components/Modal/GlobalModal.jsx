@@ -1,6 +1,7 @@
 import { useModal } from "../../Context/Modal/ModalContext";
 import SignIn from "../Auth/SignUp/SignIn";
 import ConfirmModal from "../ProductListing/ConfirmModal";
+import ViewProduct from "../ViewProduct/ViewProduct";
 import Modal from "./Modal";
 
 const GlobalModals = () => {
@@ -19,6 +20,12 @@ const GlobalModals = () => {
       return (
         <Modal>
           <ConfirmModal {...modal.props} />
+        </Modal>
+      );
+    case "productView":
+      return (
+        <Modal>
+          <ViewProduct {...modal.props} />
         </Modal>
       );
     default:

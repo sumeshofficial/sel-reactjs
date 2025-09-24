@@ -178,35 +178,35 @@ const cartSlice = createSlice({
       .addCase(deleteCartItem.fulfilled, (state, action) => {
         if (!state.cart) return;
         state.cart.products = state.cart.products.filter(
-          (p) => p.id !== action.payload
+          (product) => product.id !== action.payload
         );
         state.cart.productIds = state.cart.productIds.filter(
-          (p) => p !== action.payload.productId
+          (product) => product !== action.payload.productId
         );
         state.cart.count = state.cart.products.length;
       })
       .addCase(unAvailable.fulfilled, (state, action) => {
         if (!state.cart) return;
-        state.cart.products = state.cart.products.map((p) =>
-          p.id === action.payload.productId ? { ...p, deleted: true } : p
+        state.cart.products = state.cart.products.map((product) =>
+          product.id === action.payload.productId ? { ...product, deleted: true } : product
         );
         state.cart.productIds = state.cart.products
-          .filter((p) => !p.deleted)
-          .map((p) => p.id);
-        state.cart.count = state.cart.products.filter((p) => !p.deleted).length;
+          .filter((product) => !product.deleted)
+          .map((product) => product.id);
+        state.cart.count = state.cart.products.filter((product) => !product.deleted).length;
       })
       .addCase(checkoutProduct.fulfilled, (state, action) => {
         if (action.payload.isCurrentUser) {
           state.cart.products = state.cart.products.filter(
-            (p) => p.id !== action.payload.productId
+            (product) => product.id !== action.payload.productId
           );
           state.cart.productIds = state.cart.productIds.filter(
-            (pro) => pro.id !== action.payload.productId
+            (product) => product.id !== action.payload.productId
           );
           state.cart.count = state.cart.products.length;
         } else {
-          state.cart.products = state.cart.products.map((pro) =>
-            pro.id === action.payload.productId ? { ...pro, sold: true } : pro
+          state.cart.products = state.cart.products.map((product) =>
+            product.id === action.payload.productId ? { ...product, sold: true } : product
           );
         }
       });

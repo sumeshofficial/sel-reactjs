@@ -11,10 +11,12 @@ const MyProducts = () => {
   const dispatch = useDispatch();
   const { items, loading } = useSelector((store) => store.products);
   const { currentUser } = useSelector((store) => store.auth);
+  const isUser = true;
 
 
   useEffect(() => {
     dispatch(fetchProducts());
+
   }, []);
 
   const products = items.filter(
@@ -41,7 +43,7 @@ const MyProducts = () => {
                     <ProductCard
                       key={product.id}
                       product={product}
-                      isUser={true}
+                      isUser={isUser}
                     />
                   ))}
                 </div>

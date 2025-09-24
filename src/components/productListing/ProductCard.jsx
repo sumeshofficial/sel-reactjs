@@ -14,12 +14,13 @@ import { Edit, Trash } from "react-feather";
 import { Link } from "react-router-dom";
 import { useModal } from "../../Context/Modal/ModalContext";
 
-const ProductCard = ({ product, isUser }) => {
+const ProductCard = ({ product }) => {
   const { currentUser, userLoggedIn } = useSelector((store) => store.auth);
   const { cart } = useSelector((store) => store.cart);
   const alreadyInCart = cart?.products?.find((pro) => pro.id === product.id);
   const dispatch = useDispatch();
   const { openModal } = useModal();
+  const isUser = product.publishedBy.userId === currentUser?.userId;
 
   if (product.sold || product.deleted) {
     return;
@@ -65,8 +66,8 @@ const ProductCard = ({ product, isUser }) => {
   };
 
   return (
-    <div className="group relative">
-      <div className="w-full h-60 overflow-hidden rounded-md">
+    <div className="group relative" >
+      <div className="w-full h-60 overflow-hidden rounded-md" onClick={() => openModal("productView", { product })}>
         <div className="w-full h-60 overflow-hidden rounded-md bg-gray-100 flex items-center justify-center">
           <img
             src={product.image}
@@ -75,9 +76,8 @@ const ProductCard = ({ product, isUser }) => {
           />
         </div>
       </div>
-
-      <div className="my-4 flex justify-between">
-        <div className="w-8/12">
+      <div className="my-4 flex justify-between" onClick={() => openModal("productView", { product })}>
+        <div className="w-8/12" >
           <h3 className="font-bold text-gray-700 line-clamp-1">
             <p>{product.productName}</p>
           </h3>
