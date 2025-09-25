@@ -62,6 +62,10 @@ export const checkoutProduct = createAsyncThunk(
   async ({ productId, userId }, { rejectWithValue }) => {
     try {
       const productRef = doc(db, "products", productId);
+      const productSnap = await getDoc(productRef);
+      if (productSnap.data().sold || productSnap.data().deleted) {
+        return rejectWithValue("Product is already sold or deleted");
+      }
       await updateDoc(productRef, { sold: true });
 
       const cartRef = collection(db, "carts");
@@ -107,7 +111,7 @@ export const checkoutProduct = createAsyncThunk(
 
 export const unAvailable = createAsyncThunk(
   "cart/unAvailable",
-  async ( productId , { rejectWithValue }) => {
+  async (productId, { rejectWithValue }) => {
     try {
       const cartRef = collection(db, "carts");
       const q = query(
@@ -150,16 +154,6 @@ const cartSlice = createSlice({
       state.cart.productIds.push(action.payload.id);
       state.cart.count = state.cart.products.length;
     },
-    deleteCartProduct: (state, action) => {
-      if (!state.cart) return;
-      state.cart.products = state.cart.products.filter(
-        (item) => item.id !== action.payload
-      );
-      state.cart.productIds = state.cart.productIds.filter(
-        (id) => id !== action.payload
-      );
-      state.cart.count = state.cart.products.length;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -181,19 +175,23 @@ const cartSlice = createSlice({
           (product) => product.id !== action.payload
         );
         state.cart.productIds = state.cart.productIds.filter(
-          (product) => product !== action.payload.productId
+          (product) => product !== action.payload
         );
         state.cart.count = state.cart.products.length;
       })
       .addCase(unAvailable.fulfilled, (state, action) => {
         if (!state.cart) return;
         state.cart.products = state.cart.products.map((product) =>
-          product.id === action.payload.productId ? { ...product, deleted: true } : product
+          product.id === action.payload.productId
+            ? { ...product, deleted: true }
+            : product
         );
         state.cart.productIds = state.cart.products
           .filter((product) => !product.deleted)
           .map((product) => product.id);
-        state.cart.count = state.cart.products.filter((product) => !product.deleted).length;
+        state.cart.count = state.cart.products.filter(
+          (product) => !product.deleted
+        ).length;
       })
       .addCase(checkoutProduct.fulfilled, (state, action) => {
         if (action.payload.isCurrentUser) {
@@ -201,14 +199,20 @@ const cartSlice = createSlice({
             (product) => product.id !== action.payload.productId
           );
           state.cart.productIds = state.cart.productIds.filter(
-            (product) => product.id !== action.payload.productId
+            (id) => id !== action.payload.productId
           );
           state.cart.count = state.cart.products.length;
         } else {
           state.cart.products = state.cart.products.map((product) =>
-            product.id === action.payload.productId ? { ...product, sold: true } : product
+            product.id === action.payload.productId
+              ? { ...product, sold: true }
+              : product
           );
         }
+      })
+      .addCase(checkoutProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

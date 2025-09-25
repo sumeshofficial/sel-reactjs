@@ -1,10 +1,6 @@
 import { Trash } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  checkoutProduct,
-  deleteCartItem,
-  deleteCartProduct,
-} from "../../redux/cartSlice";
+import { checkoutProduct, deleteCartItem } from "../../redux/cartSlice";
 import toast from "react-hot-toast";
 
 const CartField = ({ product }) => {
@@ -16,14 +12,22 @@ const CartField = ({ product }) => {
 
   const handleDeleteCartItem = () => {
     dispatch(deleteCartItem({ productId, userId }));
-    dispatch(deleteCartProduct(product.id));
 
     toast.dismiss();
     toast.success("Product removed");
   };
 
   const handleCheckout = () => {
-    dispatch(checkoutProduct({ productId, userId }));
+    dispatch(checkoutProduct({ productId, userId }))
+      .unwrap()
+      .then(() => {
+        toast.dismiss();
+        toast.success("Checkout successful 🎉");
+      })
+      .catch((err) => {
+        toast.dismiss();
+        toast.error(err);
+      });
   };
 
   return (
@@ -32,11 +36,6 @@ const CartField = ({ product }) => {
         <div className="flex gap-2">
           <div className="w-16 h-16 relative">
             <img className="w-full h-auto rounded-md" src={product.image} />
-            {product.sold && (
-              <div className="absolute top-1 left-0.5 bg-red-500/30 text-white px-4 py-1 rounded z-20 text-sm">
-                Sold
-              </div>
-            )}
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-md font-bold line-clamp-1">
@@ -53,8 +52,8 @@ const CartField = ({ product }) => {
         </div>
       </div>
       <div>
-        {!product.sold &&
-          (product.deleted ? (
+        {!product.sold ? (
+          product.deleted ? (
             <button
               type="button"
               className="bg-red-500 text-white py-2 px-3 rounded-md "
@@ -69,7 +68,15 @@ const CartField = ({ product }) => {
             >
               Checkout
             </button>
-          ))}
+          )
+        ) : (
+          <button
+            type="button"
+            className="bg-red-500 text-white py-2 px-3 rounded-md "
+          >
+            Sold
+          </button>
+        )}
       </div>
     </div>
   );

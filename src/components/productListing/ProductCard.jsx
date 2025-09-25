@@ -23,7 +23,7 @@ const ProductCard = ({ product }) => {
   const isUser = product.publishedBy.userId === currentUser?.userId;
 
   if (product.sold || product.deleted) {
-    return;
+    return null;
   }
 
   const handleAddToCart = async () => {
@@ -33,10 +33,18 @@ const ProductCard = ({ product }) => {
         return toast.error("Please login to add items to cart");
       }
 
-      const cartRef = doc(db, "carts", currentUser.userId);
-      const cartSanp = await getDoc(cartRef);
+      const productRef = doc(db, "products", product.id);
+      const productSnap = await getDoc(productRef);
 
-      if (!cartSanp.exists()) {
+      if (productSnap.data().sold || productSnap.data().deleted) {
+        toast.dismiss();
+        return toast.error("Product already sold or deleted");
+      }
+
+      const cartRef = doc(db, "carts", currentUser.userId);
+      const cartSnap = await getDoc(cartRef);
+
+      if (!cartSnap.exists()) {
         await setDoc(cartRef, {
           count: 1,
           userId: currentUser?.userId,
@@ -66,8 +74,11 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="group relative" >
-      <div className="w-full h-60 overflow-hidden rounded-md" onClick={() => openModal("productView", { product })}>
+    <div className="group relative">
+      <div
+        className="w-full h-60 overflow-hidden rounded-md"
+        onClick={() => openModal("productView", { product })}
+      >
         <div className="w-full h-60 overflow-hidden rounded-md bg-gray-100 flex items-center justify-center">
           <img
             src={product.image}
@@ -76,8 +87,11 @@ const ProductCard = ({ product }) => {
           />
         </div>
       </div>
-      <div className="my-4 flex justify-between" onClick={() => openModal("productView", { product })}>
-        <div className="w-8/12" >
+      <div
+        className="my-4 flex justify-between"
+        onClick={() => openModal("productView", { product })}
+      >
+        <div className="w-8/12">
           <h3 className="font-bold text-gray-700 line-clamp-1">
             <p>{product.productName}</p>
           </h3>
