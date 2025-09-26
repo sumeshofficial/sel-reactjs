@@ -13,6 +13,7 @@ import { addToCart } from "../../redux/cartSlice";
 import { Edit, Trash } from "react-feather";
 import { Link } from "react-router-dom";
 import { useModal } from "../../Context/Modal/ModalContext";
+import { useState } from "react";
 
 const ProductCard = ({ product }) => {
   const { currentUser, userLoggedIn } = useSelector((store) => store.auth);
@@ -21,12 +22,15 @@ const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const { openModal } = useModal();
   const isUser = product.publishedBy.userId === currentUser?.userId;
+  const [isAdding, setIsAdding] = useState(false);
 
   if (product.sold || product.deleted) {
     return null;
   }
 
   const handleAddToCart = async () => {
+    if (isAdding) return;
+    setIsAdding(true);
     try {
       if (!userLoggedIn) {
         toast.dismiss();
@@ -115,10 +119,10 @@ const ProductCard = ({ product }) => {
         <div className="flex justify-end">
           <button
             onClick={handleAddToCart}
-            disabled={alreadyInCart}
+            disabled={alreadyInCart || isAdding}
             className="bg-black p-2 text-white rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {alreadyInCart ? "Added to cart" : "Add To Cart"}
+            {alreadyInCart ? "Added to cart" : isAdding ? "Adding..." : "Add To Cart"}
           </button>
         </div>
       )}
