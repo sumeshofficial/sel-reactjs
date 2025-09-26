@@ -65,9 +65,11 @@ const ProductCard = ({ product }) => {
 
       dispatch(addToCart(product));
 
+      toast.dismiss();
       toast.success("Item added to cart!");
     } catch (error) {
       console.error("Error adding to cart: ", error);
+      toast.dismiss();
       toast.error("Something went wrong!");
     } finally {
       setIsAdding(false);
