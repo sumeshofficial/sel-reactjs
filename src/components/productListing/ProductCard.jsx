@@ -69,6 +69,8 @@ const ProductCard = ({ product }) => {
     } catch (error) {
       console.error("Error adding to cart: ", error);
       toast.error("Something went wrong!");
+    } finally {
+      setIsAdding(false);
     }
   };
 
@@ -122,7 +124,11 @@ const ProductCard = ({ product }) => {
             disabled={alreadyInCart || isAdding}
             className="bg-black p-2 text-white rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {alreadyInCart ? "Added to cart" : isAdding ? "Adding..." : "Add To Cart"}
+            {alreadyInCart
+              ? "Added to cart"
+              : isAdding
+              ? "Adding..."
+              : "Add To Cart"}
           </button>
         </div>
       )}
