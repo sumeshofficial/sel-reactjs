@@ -2,11 +2,13 @@ import { Trash } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
 import { checkoutProduct, deleteCartItem } from "../../redux/cartSlice";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const CartField = ({ product }) => {
   const { currentUser } = useSelector((store) => store.auth);
   const productId = product.id;
   const userId = currentUser?.userId;
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -63,7 +65,7 @@ const CartField = ({ product }) => {
           ) : (
             <button
               type="button"
-              onClick={handleCheckout}
+              onClick={() => navigate('/checkout')}
               className="bg-black text-white py-2 px-3 rounded-md "
             >
               Checkout

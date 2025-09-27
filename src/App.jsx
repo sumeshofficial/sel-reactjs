@@ -10,6 +10,7 @@ import { SellProductContext } from "./Context/SellProductContext/SellProductCont
 import { SellProductProvider } from "./Context/SellProductContext/SellProductProvider";
 import { Toaster } from "react-hot-toast";
 import NotFound from "./components/NotFound";
+import CheckoutPage from "./components/CheckoutPage/CheckoutPage";
 
 function App() {
   useAuthListener();
@@ -50,6 +51,14 @@ function App() {
                 <SellProductProvider>
                   <SellProduct />
                 </SellProductProvider>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={"/checkout"}
+            element={
+              <ProtectedRoute>
+                <CheckoutPage />
               </ProtectedRoute>
             }
           />
