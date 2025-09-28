@@ -20,7 +20,7 @@ const CartSideBar = () => {
 
         <button
           onClick={() => setCommentsWrapper((prev) => !prev)}
-          className="absolute top-0 right-0 flex justify-center items-center w-12 h-12 rounded-full bg-gray-200 "
+          className="absolute top-0 right-0 flex justify-center items-center w-12 h-12 rounded-full bg-gray-200"
         >
           <X className="w-8 h-8" />
         </button>

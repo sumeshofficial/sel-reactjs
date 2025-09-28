@@ -1,4 +1,4 @@
-import CartSideBar from "./cart/CartSideBar";
+import CartSideBar from "./Cart/CartSideBar";
 import ErrorBoundary from "./ErrorBoundary";
 import Navbar from "./Navbar/Navbar";
 import ProductList from "./productListing/ProductList";

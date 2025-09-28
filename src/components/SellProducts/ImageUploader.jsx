@@ -1,10 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Upload, X } from "react-feather";
 import { useSellProductContext } from "../../Context/SellProductContext/SellProductContext";
 
 const ImageUploader = ({ selectedFile, setSelectedFile }) => {
   const inputRef = useRef(null);
   const { register, errors, setValue } = useSellProductContext();
+  const [fileError, setFileError] = useState(null);
 
   useEffect(() => {
     if (selectedFile) {
@@ -46,8 +47,16 @@ const ImageUploader = ({ selectedFile, setSelectedFile }) => {
         onChange={(e) => {
           const file = e.target.files[0];
           if (file) {
-            setSelectedFile(file);
-            setValue("image", file, { shouldValidate: true });
+            if (file.size > 2 * 1024 * 1024) {
+              setFileError("File size must be less than 2MB");
+              setSelectedFile(null);
+              setValue("image", null, { shouldValidate: true });
+              return;
+            } else {
+              setFileError(null);
+              setSelectedFile(file);
+              setValue("image", file, { shouldValidate: true });
+            }
           }
         }}
       />
@@ -69,6 +78,7 @@ const ImageUploader = ({ selectedFile, setSelectedFile }) => {
           {errors.image && (
             <p className="text-red-500">{errors.image.message}</p>
           )}
+          {fileError && <p className="text-red-500">{fileError}</p>}
         </>
       ) : (
         <div className="w-11/12 sm:h-auto md:h-70 flex justify-center items-center rounded-2xl overflow-hidden">

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "../../redux/cartSlice";
 import { Loader } from "react-feather";
 
-const ConfirmOrder = () => {
+const ConfirmOrder = ({isSubmitting, watch}) => {
   const { currentUser } = useSelector((store) => store.auth);
   const { cart, loading } = useSelector((store) => store.cart);
   const userId = currentUser?.userId;
@@ -11,9 +11,15 @@ const ConfirmOrder = () => {
     ? cart?.products.filter((product) => !product.sold && !product.deleted)
     : [];
 
-  const totalSubPrice = cart ? cartItems.reduce( (acc, curr) => acc += curr.price, 0) : 0;
+  const shippingCost = watch("shippingMethod");
+
+  const totalSubPrice = cart
+    ? cartItems.reduce((acc, curr) => (acc += curr.price), 0)
+    : 0;
   const totalTax = cart ? 5 * cartItems.length : 0;
-  const totalPrice = totalSubPrice + totalTax + 80;
+  const totalPrice = totalSubPrice + totalTax + shippingCost;
+
+  console.log(isSubmitting);
 
   const dispatch = useDispatch();
 
@@ -38,11 +44,13 @@ const ConfirmOrder = () => {
             {cartItems.map((item, index) => (
               <li key={index} className="flex justify-between items-center">
                 <div className="flex gap-3 items-center">
-                  <img
-                    src={item.image}
-                    alt="product-img"
-                    className="w-16 h-16 rounded-md object-cover"
-                  />
+                  <div className="w-16 h-16 flex-shrink-0 bg-gray-100 rounded-md overflow-hidden">
+                    <img
+                      src={item.image}
+                      alt="product-img"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
                   <div className="flex flex-col">
                     <p className="line-clamp-1 text-base">{item.productName}</p>
                     <p className="line-clamp-1 text-sm text-gray-500">
@@ -62,8 +70,8 @@ const ConfirmOrder = () => {
               <span className="text-md text-gray-800">₹{totalSubPrice}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-700">Shipping</span>
-              <span className="text-md text-gray-800">₹80</span>
+              <span className="text-sm text-gray-700" >Shipping</span>
+              <span className="text-md text-gray-800">₹{shippingCost}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm text-gray-700">Estimated taxes</span>
@@ -80,8 +88,12 @@ const ConfirmOrder = () => {
           </div>
 
           {/* Confirm Button */}
-          <button className="mt-8 w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition">
-            Confirm Order
+          <button
+            disabled={!cartItems.length || isSubmitting}
+            className="mt-8 w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition disabled:bg-gray-400 
+    disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? "Processing…" : "Confirm Order"}
           </button>
         </div>
       )}
