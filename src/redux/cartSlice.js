@@ -59,50 +59,54 @@ export const deleteCartItem = createAsyncThunk(
 
 export const checkoutProduct = createAsyncThunk(
   "cart/checkoutProduct",
-  async ({ productId, userId }, { rejectWithValue }) => {
+  async (userId, { rejectWithValue }) => {
     try {
-      const productRef = doc(db, "products", productId);
-      const productSnap = await getDoc(productRef);
-      if (productSnap.data().sold || productSnap.data().deleted) {
-        return rejectWithValue("Product is already sold or deleted");
-      }
-      await updateDoc(productRef, { sold: true });
+      const cartRef = doc(db, "carts", userId);
+      const cartSnap = await getDoc(cartRef);
 
-      const cartRef = collection(db, "carts");
-      const q = query(
-        cartRef,
-        where("productIds", "array-contains", productId)
-      );
-      const querySnapshot = await getDocs(q);
+      const checkoutProducts = cartSnap
+        .data()
+        .products.filter((p) => !p.sold && !p.deleted)
+        .map((p) => p.id);
 
-      const updates = querySnapshot.docs.map(async (cartDoc) => {
-        const cartData = cartDoc.data();
+      for (const productId of checkoutProducts) {
+        const productRef = doc(db, "products", productId);
+        const productSnap = await getDoc(productRef);
 
-        if (cartDoc.id === userId) {
-          const newProducts = cartData.products.filter(
-            (p) => p.id !== productId
-          );
-          const newProductIds = cartData.productIds.filter(
-            (p) => p.id !== productId
-          );
-          await updateDoc(cartDoc.ref, {
-            products: newProducts,
-            count: newProducts.length,
-            productIds: newProductIds,
-          });
-          return { userId: cartDoc.id, productId, isCurrentUser: true };
+        if (productSnap.data().sold || productSnap.data().deleted) {
+          return rejectWithValue("Product is already sold or deleted");
         }
 
-        const updatedProducts = cartData.products.map((product) =>
-          product.id === productId ? { ...product, sold: true } : product
+        await updateDoc(productRef, { sold: true });
+        const cartsColRef = collection(db, "carts");
+        const q = query(
+          cartsColRef,
+          where("productIds", "array-contains", productId)
         );
-        await updateDoc(cartDoc.ref, { products: updatedProducts });
-        return { userId: cartDoc.id, productId, isCurrentUser: false };
-      });
+        const querySnapshot = await getDocs(q);
 
-      await Promise.all(updates);
+        for (const cartDoc of querySnapshot.docs) {
+          const cartData = cartDoc.data();
 
-      return { productId, isCurrentUser: true };
+          if (cartDoc.id === userId) {
+            const newProducts = cartData.products.filter(
+              (p) => p.sold && p.deleted
+            );
+            await updateDoc(cartDoc.ref, {
+              products: newProducts,
+              count: newProducts.length,
+              productIds: newProducts.filter((p) => !p.id),
+            });
+          } else {
+            const updatedProducts = cartData.products.map((p) =>
+              p.id === productId ? { ...p, sold: true } : p
+            );
+            await updateDoc(cartDoc.ref, { products: updatedProducts });
+          }
+        }
+      }
+
+      return { checkoutProducts, isCurrentUser: true };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -194,21 +198,21 @@ const cartSlice = createSlice({
         ).length;
       })
       .addCase(checkoutProduct.fulfilled, (state, action) => {
-        if (action.payload.isCurrentUser) {
-          state.cart.products = state.cart.products.filter(
-            (product) => product.id !== action.payload.productId
-          );
-          state.cart.productIds = state.cart.productIds.filter(
-            (id) => id !== action.payload.productId
-          );
-          state.cart.count = state.cart.products.length;
-        } else {
-          state.cart.products = state.cart.products.map((product) =>
-            product.id === action.payload.productId
-              ? { ...product, sold: true }
-              : product
-          );
-        }
+        action.payload.checkoutProducts.forEach((productId) => {
+          if (action.payload.isCurrentUser) {
+            state.cart.products = state.cart.products.filter(
+              (product) => product.id !== productId
+            );
+            state.cart.productIds = state.cart.productIds.filter(
+              (id) => id !== productId
+            );
+            state.cart.count = state.cart.products.length;
+          } else {
+            state.cart.products = state.cart.products.map((product) =>
+              product.id === productId ? { ...product, sold: true } : product
+            );
+          }
+        });
       })
       .addCase(checkoutProduct.rejected, (state, action) => {
         state.loading = false;

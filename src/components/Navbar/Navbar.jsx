@@ -6,7 +6,7 @@ import MobileMenu from "./MobileMenu";
 import logo from "../../assets/sel-logo.png";
 import AuthIcon from "./AuthIcon";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Loader, ShoppingBag, Tag } from "react-feather";
+import { Home, Loader, ShoppingBag, Tag, Package } from "react-feather";
 import { useModal } from "../../Context/Modal/ModalContext";
 import { useSelector } from "react-redux";
 import { useCartWrapper } from "../../Context/Comment/CartWrapperContext";
@@ -20,7 +20,7 @@ export default function Navbar() {
   const location = useLocation();
   const menu = [
     { name: "Home", icon: Home, href: "/" },
-    { name: "My Products", icon: ShoppingBag, href: "/my-products" },
+    { name: "My Orders", icon: Package, href: "/my-orders" },
   ];
 
   return (

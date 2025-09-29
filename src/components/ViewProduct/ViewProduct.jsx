@@ -1,22 +1,29 @@
-import { arrayUnion, doc, getDoc, increment, setDoc, updateDoc } from "firebase/firestore";
+import {
+  arrayUnion,
+  doc,
+  getDoc,
+  increment,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { db } from "../../firebase/firebase";
 import { addToCart } from "../../redux/cartSlice";
 
-const ViewProduct = ({ product }) => {
+const ViewProduct = ({ product, type = "normal" }) => {
   const { currentUser, userLoggedIn } = useSelector((store) => store.auth);
   const { cart } = useSelector((store) => store.cart);
   const alreadyInCart = cart?.products?.find((pro) => pro.id === product.id);
   const dispatch = useDispatch();
-  const isUser = product.publishedBy.userId === currentUser?.userId;
+  const isUser = product?.publishedBy?.userId === currentUser?.userId;
 
   if (product.sold || product.deleted) {
     return;
   }
 
   const handleAddToCart = async () => {
-    console.log("hello")
+    console.log("hello");
     try {
       if (!userLoggedIn) {
         toast.dismiss();
@@ -79,7 +86,7 @@ const ViewProduct = ({ product }) => {
           {product.description}
         </p>
 
-        {!isUser && (
+        {!isUser && type !== "orders" && (
           <button
             onClick={handleAddToCart}
             disabled={alreadyInCart}

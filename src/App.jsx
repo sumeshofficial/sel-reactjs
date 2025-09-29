@@ -1,16 +1,16 @@
 import GlobalModals from "./components/Modal/GlobalModal";
 import ErrorBoundary from "./components/ErrorBoundary";
 import useAuthListener from "./components/Auth/useAuthListener";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import MyProducts from "./components/MyProducts";
 import SellProduct from "./components/SellProducts/SellProduct";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { SellProductContext } from "./Context/SellProductContext/SellProductContext";
 import { SellProductProvider } from "./Context/SellProductContext/SellProductProvider";
 import { Toaster } from "react-hot-toast";
 import NotFound from "./components/NotFound";
-import CheckoutPage from "./components/CheckoutPage/CheckoutPage";
+import CheckoutGuard from "./components/CheckoutPage/CheckoutGuard";
+import MyOrders from "./components/MyOrders/MyOrders";
 
 function App() {
   useAuthListener();
@@ -30,6 +30,16 @@ function App() {
               <ProtectedRoute>
                 <ErrorBoundary>
                   <MyProducts />
+                </ErrorBoundary>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={"/my-orders"}
+            element={
+              <ProtectedRoute>
+                <ErrorBoundary>
+                  <MyOrders />
                 </ErrorBoundary>
               </ProtectedRoute>
             }
@@ -55,10 +65,10 @@ function App() {
             }
           />
           <Route
-            path={"/checkout"}
+            path={"/checkout/:id"}
             element={
               <ProtectedRoute>
-                <CheckoutPage />
+                <CheckoutGuard />
               </ProtectedRoute>
             }
           />

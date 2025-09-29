@@ -1,12 +1,8 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchCart } from "../../redux/cartSlice";
 import { Loader } from "react-feather";
+import { useSelector } from "react-redux";
 
 const ConfirmOrder = ({isSubmitting, watch}) => {
-  const { currentUser } = useSelector((store) => store.auth);
   const { cart, loading } = useSelector((store) => store.cart);
-  const userId = currentUser?.userId;
   const cartItems = cart
     ? cart?.products.filter((product) => !product.sold && !product.deleted)
     : [];
@@ -18,16 +14,7 @@ const ConfirmOrder = ({isSubmitting, watch}) => {
     : 0;
   const totalTax = cart ? 5 * cartItems.length : 0;
   const totalPrice = totalSubPrice + totalTax + Number(shippingCost);
-
-  console.log(isSubmitting);
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (userId) {
-      dispatch(fetchCart(userId));
-    }
-  }, [userId]);
+  
 
   return (
     <div className="border-2 border-gray-300 p-6 rounded-2xl">

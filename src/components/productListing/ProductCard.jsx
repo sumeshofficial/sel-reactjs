@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import { useModal } from "../../Context/Modal/ModalContext";
 import { useState } from "react";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, type = "home" }) => {
   const { currentUser, userLoggedIn } = useSelector((store) => store.auth);
   const { cart } = useSelector((store) => store.cart);
   const alreadyInCart = cart?.products?.find((pro) => pro.id === product.id);
@@ -24,7 +24,7 @@ const ProductCard = ({ product }) => {
   const isUser = product.publishedBy.userId === currentUser?.userId;
   const [isAdding, setIsAdding] = useState(false);
 
-  if (product.sold || product.deleted) {
+  if ((type === "home" && product.sold) || product.deleted) {
     return null;
   }
 
@@ -111,14 +111,22 @@ const ProductCard = ({ product }) => {
       </div>
 
       {isUser ? (
-        <div className="flex gap-2 ">
-          <Link to={`/edit-product/${product.id}`}>
-            <Edit />
-          </Link>
-          <button type="button" onClick={handleDeleteProduct}>
-            <Trash />
-          </button>
-        </div>
+        product.sold ? (
+          <div className="flex justify-end">
+            <button className="bg-red-500 py-2 px-4 text-white rounded-md">
+              Sold
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-2 ">
+            <Link to={`/edit-product/${product.id}`}>
+              <Edit />
+            </Link>
+            <button type="button" onClick={handleDeleteProduct}>
+              <Trash />
+            </button>
+          </div>
+        )
       ) : (
         <div className="flex justify-end">
           <button

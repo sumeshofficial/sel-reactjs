@@ -4,7 +4,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { doSignOut } from "../../firebase/auth";
-import { Home, ShoppingBag, LogOut, LogIn, Loader, Tag } from "react-feather";
+import { Home, ShoppingBag, LogOut, LogIn, Tag, Package } from "react-feather";
 
 const MobileMenu = ({ open, setOpen }) => {
   const { openModal, closeModal } = useModal();
@@ -13,6 +13,7 @@ const MobileMenu = ({ open, setOpen }) => {
   const menu = [
     { name: "Home", icon: Home, href: "/" },
     { name: "My Products", icon: ShoppingBag, href: "/my-products" },
+    { name: "My Orders", icon: Package, href: "/my-orders" },
   ];
 
   return (

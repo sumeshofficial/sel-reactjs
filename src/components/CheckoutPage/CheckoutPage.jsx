@@ -4,10 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import ConfirmOrder from "./ConfirmOrder";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { checkoutProduct } from "../../redux/cartSlice";
+import { checkoutProduct, fetchCart } from "../../redux/cartSlice";
 import toast from "react-hot-toast";
+import { addOrder } from "../../redux/ordersSlice";
+import { useEffect } from "react";
 
 const CheckoutPage = () => {
+  const { cart } = useSelector((store) => store.cart);
   const { register, handleSubmit, reset, setValue, watch, formState } =
     useForm();
   const { errors, isSubmitting } = formState;
@@ -20,8 +23,27 @@ const CheckoutPage = () => {
 
   const navigate = useNavigate();
 
-  const onSubmit = async () => {
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchCart(userId));
+    }
+  }, [userId]);
+
+  const cartItems = cart
+    ? cart?.products.filter((product) => !product.sold && !product.deleted)
+    : [];
+
+  const shippingCost = watch("shippingMethod");
+
+  const totalSubPrice = cart
+    ? cartItems.reduce((acc, curr) => (acc += curr.price), 0)
+    : 0;
+  const totalTax = cart ? 5 * cartItems.length : 0;
+  const totalPrice = totalSubPrice + totalTax + Number(shippingCost);
+
+  const onSubmit = async (data) => {
     try {
+      await dispatch(addOrder({ cartItems, address: data, totalPrice, userId })).unwrap();
       await dispatch(checkoutProduct(userId)).unwrap();
       toast.dismiss();
       toast.success("Ordered successfully");
