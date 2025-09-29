@@ -30,7 +30,7 @@ const ConfirmOrder = ({isSubmitting, watch}) => {
   }, [userId]);
 
   return (
-    <div className="border-2 border-gray-300 p-6 rounded-2xl bg-white">
+    <div className="border-2 border-gray-300 p-6 rounded-2xl">
       <h2 className="text-2xl font-medium mb-4">Your Cart</h2>
 
       {loading ? (
