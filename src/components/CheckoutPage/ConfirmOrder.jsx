@@ -17,7 +17,7 @@ const ConfirmOrder = ({isSubmitting, watch}) => {
     ? cartItems.reduce((acc, curr) => (acc += curr.price), 0)
     : 0;
   const totalTax = cart ? 5 * cartItems.length : 0;
-  const totalPrice = totalSubPrice + totalTax + shippingCost;
+  const totalPrice = totalSubPrice + totalTax + Number(shippingCost);
 
   console.log(isSubmitting);
 
