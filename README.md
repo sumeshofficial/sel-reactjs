@@ -33,13 +33,10 @@ The goal of this project was to practice state management, authentication, and c
 
 ## Tech Stack
 
- - React.js
-
- - Redux Toolkit
-
- - Firebase (Auth + Firestore)
-
- - TailwindCSS
+![React](https://img.shields.io/badge/React-17.0.2-blue)
+![Redux](https://img.shields.io/badge/Redux-Toolkit-purple)
+![Firebase](https://img.shields.io/badge/Firebase-orange)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-skyblue)
 
  - React Router
 
@@ -60,11 +57,11 @@ npm install
 
 3. Setup Firebase
 
- - Create a Firebase project → https://console.firebase.google.com
+ - Create a Firebase project → `https://console.firebase.google.com`
 
  - Enable Auth (Google) and Firestore Database
 
- - Add your Firebase config to src/firebase/firebase.js
+ - Add your Firebase config to `src/firebase/firebase.js`
 
 4. Run the project
 
@@ -72,7 +69,7 @@ npm install
 npm start
 ```
 
-App runs on → **`http://localhost:3000`**
+App runs on → `http://localhost:3000`
 
 ### Notes
 
