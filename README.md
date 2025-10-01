@@ -1,13 +1,88 @@
-# React + Vite
+# Mini E-Commerce Website (React + Redux + Firebase)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Live Demo:** [sel-resell-application.web.app](https://sel-resell-application.web.app/)
 
-Currently, two official plugins are available:
+A mini e-commerce web application built as a learning project using React, Redux Toolkit, Firebase, and Tailwind CSS.
+The goal of this project was to practice state management, authentication, and checkout flows in a real-world style setup.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Learning Goals
 
-## Expanding the ESLint configuration
+ - Understand how to integrate Firebase Authentication in React
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# sel-reactjs
+ - Learn Redux Toolkit for global state management (cart, auth, orders)
+
+ - Practice TailwindCSS for responsive, mobile-first UI
+
+ - Build a basic checkout process (address + shipping + order summary)
+
+ - Store and retrieve data from Firebase Firestore
+
+## Features
+
+ - User authentication (Firebase Auth)
+
+ - Cart management (add/remove, persisted in Redux store)
+
+ - Checkout flow with address form and shipping method
+
+ - Orders page to view placed orders
+
+ - Responsive UI using TailwindCSS
+
+ - State management with Redux Toolkit
+
+## Tech Stack
+
+ - React.js
+
+ - Redux Toolkit
+
+ - Firebase (Auth + Firestore)
+
+ - TailwindCSS
+
+ - React Router
+
+## Project Setup
+
+1. Clone the repo
+
+```bash
+git clone https://github.com/sumeshofficial/sel-reactjs.git
+cd sel-reactjs
+```
+
+2. Install dependencies
+
+```bash
+npm install
+```
+
+3. Setup Firebase
+
+ - Create a Firebase project → https://console.firebase.google.com
+
+ - Enable Auth (Google) and Firestore Database
+
+ - Add your Firebase config to src/firebase/firebase.js
+
+4. Run the project
+
+```bash
+npm start
+```
+
+
+App runs on → 
+```diff
+http://localhost:3000
+```
+
+### Notes
+
+ - This is not a production-ready project.
+ - It was built as part of my learning journey in React, Firebase, and Redux Toolkit.
+
+### Author
+
+Sumesh J
