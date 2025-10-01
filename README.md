@@ -33,10 +33,13 @@ The goal of this project was to practice state management, authentication, and c
 
 ## Tech Stack
 
-![React](https://img.shields.io/badge/React-17.0.2-blue)
-![Redux](https://img.shields.io/badge/Redux-Toolkit-purple)
-![Firebase](https://img.shields.io/badge/Firebase-orange)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-skyblue)
+ - React.js
+
+ - Redux Toolkit
+
+ - Firebase (Auth + Firestore)
+
+ - TailwindCSS
 
  - React Router
 
@@ -71,11 +74,14 @@ npm start
 
 App runs on → `http://localhost:3000`
 
-### Notes
+## Notes
 
  - This is not a production-ready project.
  - It was built as part of my learning journey in React, Firebase, and Redux Toolkit.
 
-### Author
+## Author
 
-Sumesh J
+**Sumesh J**
+
+GitHub: [sumeshofficial](https://github.com/sumeshofficial)  
+LinkedIn: [Sumesh J](https://www.linkedin.com/in/sumesh-j-2a6793359/)
