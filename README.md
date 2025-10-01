@@ -72,8 +72,7 @@ npm install
 npm start
 ```
 
-
-App runs on → http://localhost:3000
+App runs on → `http://localhost:3000`
 
 ### Notes
 
